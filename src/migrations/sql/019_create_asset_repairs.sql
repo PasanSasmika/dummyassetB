@@ -1,0 +1,23 @@
+CREATE TABLE `asset_repairs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `asset_id` int NOT NULL,
+  `repair_type` enum('Service','Damage','Replacement') NOT NULL DEFAULT 'Service',
+  `ticket_id` int DEFAULT NULL,
+  `reported_by` int NOT NULL,
+  `repair_cost` decimal(10,2) DEFAULT NULL,
+  `vendor_name` varchar(150) DEFAULT NULL,
+  `description` text,
+  `start_date` date DEFAULT NULL,
+  `completion_date` date DEFAULT NULL,
+  `status` enum('Pending','In Progress','Completed','Cannot Repair','Replaced') DEFAULT 'Pending',
+  `warranty_start` date DEFAULT NULL,
+  `warranty_end` date DEFAULT NULL,
+  `warranty_document` varchar(255) DEFAULT NULL,
+  `warranty_covered` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `asset_id` (`asset_id`),
+  KEY `ticket_id` (`ticket_id`),
+  KEY `reported_by` (`reported_by`),
+  CONSTRAINT `asset_repairs_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `asset_repairs_ibfk_3` FOREIGN KEY (`reported_by`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

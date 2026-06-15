@@ -1,0 +1,21 @@
+CREATE TABLE `accessory_assignments` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `accessory_id` bigint NOT NULL,
+  `asset_id` int NOT NULL,
+  `quantity` int NOT NULL DEFAULT '1',
+  `condition_out` varchar(50) DEFAULT NULL,
+  `condition_in` varchar(50) DEFAULT NULL,
+  `assigned_date` date NOT NULL,
+  `expected_return_date` date DEFAULT NULL,
+  `actual_return_date` date DEFAULT NULL,
+  `assigned_by` int NOT NULL,
+  `notes` text,
+  `status` enum('Assigned','Returned','Overdue') NOT NULL DEFAULT 'Assigned',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `accessory_id` (`accessory_id`),
+  KEY `asset_id` (`asset_id`),
+  CONSTRAINT `accessory_assignments_ibfk_1` FOREIGN KEY (`accessory_id`) REFERENCES `accessories` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `accessory_assignments_ibfk_2` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

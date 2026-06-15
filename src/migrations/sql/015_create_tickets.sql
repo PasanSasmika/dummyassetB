@@ -1,0 +1,21 @@
+CREATE TABLE `tickets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `asset_id` int DEFAULT NULL,
+  `reporter_id` int NOT NULL,
+  `assignee_id` int DEFAULT NULL,
+  `issue_type` enum('Maintenance','Repair','Incident','Upgrade','Other') NOT NULL,
+  `priority` enum('Low','Medium','High','Critical') DEFAULT 'Low',
+  `status` enum('Open','In Progress','On Hold','Resolved','Closed') DEFAULT 'Open',
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `resolved_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `asset_id` (`asset_id`),
+  KEY `reporter_id` (`reporter_id`),
+  KEY `assignee_id` (`assignee_id`),
+  CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `tickets_ibfk_2` FOREIGN KEY (`reporter_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `tickets_ibfk_3` FOREIGN KEY (`assignee_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
