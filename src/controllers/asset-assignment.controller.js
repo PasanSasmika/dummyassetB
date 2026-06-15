@@ -1,6 +1,5 @@
 const db = require('../config/db');
-const path = require('path');
-const fs = require('fs');
+const { deleteFromCloudinary } = require('../config/cloudinary');
 
 // ─── HELPERS ─────────────────────────────────────────────
 
@@ -184,7 +183,7 @@ exports.uploadAssignDocument = async (req, res) => {
     // Remove old assign doc if it exists (replace flow)
     if (assignment.assign_document_id) {
       const [old] = await conn.query('SELECT file_path FROM documents WHERE id = ?', [assignment.assign_document_id]);
-      if (old.length) { try { fs.unlinkSync(old[0].file_path); } catch (_) { } }
+      if (old.length) { await deleteFromCloudinary(old[0].file_path); }
       await conn.query('DELETE FROM documents WHERE id = ?', [assignment.assign_document_id]);
     }
 
@@ -229,7 +228,7 @@ exports.uploadAssignDocument = async (req, res) => {
     });
   } catch (err) {
     await conn.rollback();
-    if (req.file?.path) { try { fs.unlinkSync(req.file.path); } catch (_) { } }
+    if (req.file?.path) { await deleteFromCloudinary(req.file.path); }
     res.status(500).json({ success: false, message: err.message });
   } finally { conn.release(); }
 };
@@ -312,7 +311,7 @@ exports.uploadReturnDocument = async (req, res) => {
 
     if (assignment.return_document_id) {
       const [old] = await conn.query('SELECT file_path FROM documents WHERE id=?', [assignment.return_document_id]);
-      if (old.length) { try { fs.unlinkSync(old[0].file_path); } catch (_) { } }
+      if (old.length) { await deleteFromCloudinary(old[0].file_path); }
       await conn.query('DELETE FROM documents WHERE id=?', [assignment.return_document_id]);
     }
 
@@ -334,7 +333,7 @@ exports.uploadReturnDocument = async (req, res) => {
     });
   } catch (err) {
     await conn.rollback();
-    if (req.file?.path) { try { fs.unlinkSync(req.file.path); } catch (_) { } }
+    if (req.file?.path) { await deleteFromCloudinary(req.file.path); }
     res.status(500).json({ success: false, message: err.message });
   } finally { conn.release(); }
 };
@@ -370,7 +369,7 @@ exports.uploadGatePassDocument = async (req, res) => {
 
     if (assignment.gate_pass_document_id) {
       const [old] = await conn.query('SELECT file_path FROM documents WHERE id = ?', [assignment.gate_pass_document_id]);
-      if (old.length) { try { fs.unlinkSync(old[0].file_path); } catch (_) { } }
+      if (old.length) { await deleteFromCloudinary(old[0].file_path); }
       await conn.query('DELETE FROM documents WHERE id = ?', [assignment.gate_pass_document_id]);
     }
 
@@ -413,7 +412,7 @@ exports.uploadGatePassDocument = async (req, res) => {
     });
   } catch (err) {
     await conn.rollback();
-    if (req.file?.path) { try { fs.unlinkSync(req.file.path); } catch (_) { } }
+    if (req.file?.path) { await deleteFromCloudinary(req.file.path); }
     res.status(500).json({ success: false, message: err.message });
   } finally { conn.release(); }
 };
