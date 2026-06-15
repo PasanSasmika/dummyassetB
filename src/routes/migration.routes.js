@@ -17,11 +17,13 @@ function getMigrationFiles() {
 
 async function getConnection() {
   const conn = await mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'mysql',
-    database: DB_NAME,
+    host:             process.env.DB_HOST     || 'localhost',
+    port:             parseInt(process.env.DB_PORT, 10) || 3306,
+    user:             process.env.DB_USER     || 'root',
+    password:         process.env.DB_PASSWORD || 'mysql',
+    database:         DB_NAME,
     multipleStatements: true,
+    connectTimeout:   20000,
   });
   return conn;
 }
@@ -80,9 +82,11 @@ router.get('/test-connection', authGuard, async (req, res) => {
   let conn;
   try {
     conn = await mysql.createConnection({
-      host:     process.env.DB_HOST     || 'localhost',
-      user:     process.env.DB_USER     || 'root',
-      password: process.env.DB_PASSWORD || 'mysql',
+      host:           process.env.DB_HOST     || 'localhost',
+      port:           parseInt(process.env.DB_PORT, 10) || 3306,
+      user:           process.env.DB_USER     || 'root',
+      password:       process.env.DB_PASSWORD || 'mysql',
+      connectTimeout: 20000,
     });
     await conn.query('SELECT 1');
     const [dbRows] = await conn.query(
@@ -181,10 +185,12 @@ router.post('/run', authGuard, async (req, res) => {
 
   try {
     conn = await mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || 'mysql',
+      host:             process.env.DB_HOST     || 'localhost',
+      port:             parseInt(process.env.DB_PORT, 10) || 3306,
+      user:             process.env.DB_USER     || 'root',
+      password:         process.env.DB_PASSWORD || 'mysql',
       multipleStatements: true,
+      connectTimeout:   20000,
     });
 
     await conn.query(
